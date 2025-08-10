@@ -25,6 +25,9 @@ pipeline {
         stage('Pull Repository') {
             steps {
                 echo 'Stage 1: Pulling repository from remote...'
+                         sh """
+                                        ls -la
+                         """
                 // Clean workspace and checkout code
                 cleanWs()
                 // Explicit checkout using credentials for private repositories
