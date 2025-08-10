@@ -41,8 +41,7 @@ pipeline {
                     // Build image using explicit dockerfile and context paths from workspace root
                     sh """
                         ls -la
-                        ls -la ${DOCKER_BUILD_CONTEXT}
-                        docker build -f ${DOCKERFILE_PATH} -t ${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_BUILD_CONTEXT}
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_BUILD_CONTEXT}
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
                     """
                 }
