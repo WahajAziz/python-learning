@@ -59,7 +59,7 @@ pipeline {
                             docker logout ${DOCKER_REGISTRY}
                         """
                 }
-                }
+
                 echo 'Docker image pushed successfully!'
             }
         }
