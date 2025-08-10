@@ -22,32 +22,18 @@ pipeline {
     }
     
     stages {
-        stage('Pull Repository') {
-            steps {
-                echo 'Stage 1: Pulling repository from remote...'
-                         sh """
-                                        ls -la
-                         """
-                // Clean workspace and checkout code
-                cleanWs()
-                // Explicit checkout using credentials for private repositories
-                git branch: "${GIT_BRANCH}", credentialsId: "${GIT_CREDENTIALS_ID}", url: "${GIT_REPO_URL}"
 
-                echo 'Repository pulled successfully!'
-            }
-        }
-        
         stage('Build Docker Image') {
             steps {
                 echo 'Stage 2: Building Docker image...'
-                script {
+
                     // Build image using explicit dockerfile and context paths from workspace root
-                    sh """
+                sh """
                         ls -la
                         docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
-                    """
-                }
+                """
+
                 echo 'Docker image built successfully!'
             }
         }
@@ -55,9 +41,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Stage 3: Pushing Docker image to repository...'
-                script {
                     // Login to Docker registry using a Personal Access Token (PAT)
-                    withCredentials([string(credentialsId: "${DOCKER_PAT_CREDENTIALS_ID}", variable: 'DOCKER_PAT')]) {
+                withCredentials([string(credentialsId: "${DOCKER_PAT_CREDENTIALS_ID}", variable: 'DOCKER_PAT')]) {
                         sh """
                             # Login to Docker registry
                             echo \$DOCKER_PAT | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
@@ -73,7 +58,7 @@ pipeline {
                             # Logout from registry
                             docker logout ${DOCKER_REGISTRY}
                         """
-                    }
+                }
                 }
                 echo 'Docker image pushed successfully!'
             }
